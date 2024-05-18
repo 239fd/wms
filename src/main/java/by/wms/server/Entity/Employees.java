@@ -12,20 +12,24 @@ import lombok.RequiredArgsConstructor;
 public class Employees {
 
     @Id
-    @Column(name = "login")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
+
+    @Column(name = "login", nullable = false)
     private String login;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "phone")
+    @Column(name = "phone", nullable = false)
     private String phone;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private Title title;
 
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @Column(name = "second_name")
@@ -37,4 +41,5 @@ public class Employees {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "warehouse_id")
     private Warehouse warehouse;
+
 }

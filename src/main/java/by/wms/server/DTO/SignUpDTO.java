@@ -1,18 +1,20 @@
 package by.wms.server.DTO;
 
+import by.wms.server.Entity.Enum.Title;
 import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
+@Getter
+@Setter
 public class SignUpDTO {
 
     private String login;
     private String password;
-    private String title;
+    private String phone;
+    private Title title;
     private String firstName;
     private String secondName;
     private String surname;
-
 }

@@ -1,5 +1,6 @@
 package by.wms.server.DTO;
 
+import by.wms.server.Entity.Enum.Title;
 import lombok.*;
 
 @Getter
@@ -8,11 +9,13 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class EmployeesDTO {
+
     private String login;
-    private String password;
-    private String title;
     private String firstName;
+    private String password;
+    private String phone;
     private String secondName;
     private String surname;
+    private Title title;
     private String token;
 }

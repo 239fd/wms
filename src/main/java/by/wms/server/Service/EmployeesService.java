@@ -42,15 +42,15 @@ public class EmployeesService {
     public EmployeesDTO register(SignUpDTO signUpDTO) {
         Optional<Employees> optionalEmployees = employeesRepository.findByLogin(signUpDTO.getLogin());
 
-        if(optionalEmployees.isPresent()){
+        if (optionalEmployees.isPresent()) {
             throw new AppException("Login already exists", HttpStatus.CONFLICT);
         }
 
         Employees employees = employeesMapper.signUpToEmployee(signUpDTO);
-
+        System.out.println("Employees entity before save: " + employees); // Логирование
         employees.setPassword(passwordEncoder.encode(CharBuffer.wrap(signUpDTO.getPassword())));
 
-        employeesRepository.save(employees);
+        Employees savedEmployees = employeesRepository.save(employees);
 
         return employeesMapper.toEmployeesDTO(employees);
     }
