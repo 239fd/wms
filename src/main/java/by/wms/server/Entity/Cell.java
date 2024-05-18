@@ -1,7 +1,6 @@
 package by.wms.server.Entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -27,6 +26,9 @@ public class Cell {
     @Column(name = "width")
     private double width;
 
+    @Column(name = "height")
+    private double height;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rack_id")
     private Rack rack;
@@ -39,4 +41,6 @@ public class Cell {
     )
     Set<Product> products = new HashSet<>();
 
+    public Cell(int id, double length, double height, double width) {
+    }
 }

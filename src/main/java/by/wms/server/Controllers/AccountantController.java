@@ -1,4 +1,4 @@
-package by.wms.server.Controlles;
+package by.wms.server.Controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

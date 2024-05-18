@@ -1,14 +1,12 @@
 package by.wms.server.Entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
+@AllArgsConstructor
 @RequiredArgsConstructor
 @Getter
 @Setter
@@ -35,4 +33,10 @@ public class Warehouse {
 
     @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Employees> employees;
+
+    public Warehouse(int id, String name, String address) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+    }
 }

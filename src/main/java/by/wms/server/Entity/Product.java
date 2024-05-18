@@ -2,7 +2,6 @@ package by.wms.server.Entity;
 
 import by.wms.server.Entity.Enum.Status;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

@@ -2,20 +2,16 @@ package by.wms.server.Entity;
 
 import by.wms.server.Entity.Enum.Title;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @RequiredArgsConstructor
-@Getter
-@Setter
+@Data
 @Table(name = "employees")
 public class Employees {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "login")
     private String login;
 
