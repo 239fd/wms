@@ -29,8 +29,17 @@ public class WarehouseService {
     public List<Warehouse> getAllWarehouses() {
         return warehouseRepository.findAll();
     }
+    public int getWarehouseIdByOrganizationINN(String organizationId) {
+        return warehouseRepository.getWarehouseIdByOrganizationINN(organizationId);
+    }
 
     public boolean findByNameAndOrganization(String name, Organization organization) {
         return warehouseRepository.findByNameAndOrganization(name, organization) != null;
+    }
+    public boolean findById(int id) {
+        return warehouseRepository.findWarehouseById(id) == null;
+    }
+    public Warehouse findByIdExtend(int id) {
+        return warehouseRepository.findWarehouseById(id);
     }
 }

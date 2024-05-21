@@ -35,4 +35,8 @@ public class OrganizationService {
     public List<Organization> getAllOrganizations() {
         return organizationRepository.findAll();
     }
+
+    public int getOrganizationIdByINN(String organizationINN) {
+        return organizationRepository.getOrganizationIdByINN(organizationINN);
+    }
 }

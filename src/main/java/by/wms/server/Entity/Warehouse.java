@@ -31,7 +31,5 @@ public class Warehouse {
     @JoinColumn(name = "organizationid")
     private Organization organization;
 
-    @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Employees> employees;
 
 }

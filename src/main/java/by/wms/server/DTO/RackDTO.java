@@ -8,6 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RackDTO {
-    private int id;
+
     private int capacity;
 }

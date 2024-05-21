@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 public class CellDTO {
 
-    private int id;
     private double length;
     private double width;
     private double height;

@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WarehouseRepository extends JpaRepository<Warehouse, Integer> {
     Warehouse findByNameAndOrganization(String name, Organization organization);
+    Warehouse findWarehouseById(Integer id);
+    Integer getWarehouseIdByOrganizationINN(String organizationINN);
 }

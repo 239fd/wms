@@ -38,8 +38,4 @@ public class Employees {
     @Column(name = "surname")
     private String surname;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "warehouse_id")
-    private Warehouse warehouse;
-
 }
