@@ -30,12 +30,10 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<EmployeesDTO> register(@RequestBody SignUpDTO signUpDTO) {
-        System.out.println("Received SignUpDTO: " + signUpDTO); // Добавлено логирование
         EmployeesDTO employeesDTO = employeesService.register(signUpDTO);
 
         employeesDTO.setToken(userAuthProvider.createToken(signUpDTO.getLogin()));
         return ResponseEntity.created(URI.create("/users/" + employeesDTO.getLogin()))
                 .body(employeesDTO);
     }
-
 }

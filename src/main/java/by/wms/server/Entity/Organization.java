@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.util.List;
 
+
 @Entity
 @RequiredArgsConstructor
 @Getter
@@ -16,8 +17,11 @@ public class Organization {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
+
     @Column(name = "INN")
-    private String inn;
+    private String INN;
 
     @Column(name = "name")
     private String name;
@@ -27,5 +31,4 @@ public class Organization {
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Warehouse> warehouses;
-
 }

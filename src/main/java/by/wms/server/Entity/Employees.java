@@ -32,7 +32,7 @@ public class Employees {
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "second_name")
+    @Column(name = "second_name", nullable = false)
     private String secondName;
 
     @Column(name = "surname")

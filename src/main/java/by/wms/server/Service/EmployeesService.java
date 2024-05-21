@@ -36,7 +36,7 @@ public class EmployeesService {
             return employeesMapper.toEmployeesDTO(employee);
         }
 
-        throw new AppException("Wrong password", HttpStatus.UNAUTHORIZED);
+        throw new AppException("Wrong password or login", HttpStatus.UNAUTHORIZED);
     }
 
     public EmployeesDTO register(SignUpDTO signUpDTO) {
@@ -47,10 +47,9 @@ public class EmployeesService {
         }
 
         Employees employees = employeesMapper.signUpToEmployee(signUpDTO);
-        System.out.println("Employees entity before save: " + employees); // Логирование
         employees.setPassword(passwordEncoder.encode(CharBuffer.wrap(signUpDTO.getPassword())));
 
-        Employees savedEmployees = employeesRepository.save(employees);
+        employeesRepository.save(employees);
 
         return employeesMapper.toEmployeesDTO(employees);
     }

@@ -28,15 +28,10 @@ public class Warehouse {
     private List<Rack> racks;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "organization_INN")
+    @JoinColumn(name = "organizationid")
     private Organization organization;
 
     @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Employees> employees;
 
-    public Warehouse(int id, String name, String address) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-    }
 }
