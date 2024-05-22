@@ -49,11 +49,14 @@ public class EmployeesService {
         if (optionalEmployees.isPresent()) {
             throw new AppException("Login already exists", HttpStatus.CONFLICT);
         }
-
+        if(signUpDTO.getTitle() == null || signUpDTO.getFirstName() == null|| signUpDTO.getPhone() == null || signUpDTO.getSecondName() == null){
+            throw new AppException("Not enough information", HttpStatus.CONFLICT);
+        }
         Employees employees = employeesMapper.signUpToEmployee(signUpDTO);
         if(warehouseRepository.getWarehouseById(Integer.valueOf((signUpDTO.getOrganizationId()).substring(9))) == null){
             throw new AppException("There are no warehouse with this code", HttpStatus.CONFLICT);
         }
+
         employees.setWarehouse(warehouseRepository.getWarehouseById(Integer.valueOf((signUpDTO.getOrganizationId()).substring(9))));
         employees.setOrganization(organizationRepository.getOrganizationByINN((signUpDTO.getOrganizationId()).substring(0,9)));
         employees.setPassword(passwordEncoder.encode(CharBuffer.wrap(signUpDTO.getPassword())));

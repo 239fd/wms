@@ -39,8 +39,6 @@ public class Cell {
             joinColumns = { @JoinColumn(name = "cell_id") },
             inverseJoinColumns = { @JoinColumn(name = "product_id")}
     )
-    Set<Product> products = new HashSet<>();
+    private Set<Product> products = new HashSet<>();
 
-    public Cell(int id, double length, double height, double width) {
-    }
 }

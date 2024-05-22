@@ -43,11 +43,15 @@ public class Product {
     @Column(name = "price")
     private double price;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
 
     @Column(name = "bestbeforedate")
     private Date bestBeforeDate;
+
+    @Column(name = "weight")
+    private double weight;
 
     @ManyToMany(mappedBy = "products")
     private Set<Cell> cells = new HashSet<>();

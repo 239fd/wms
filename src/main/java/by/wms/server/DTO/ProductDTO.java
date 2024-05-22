@@ -1,13 +1,13 @@
 package by.wms.server.DTO;
 
 import by.wms.server.Entity.Enum.Status;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Date;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Getter
 @Setter
 public class ProductDTO {

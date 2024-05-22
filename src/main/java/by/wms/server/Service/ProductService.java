@@ -2,6 +2,7 @@ package by.wms.server.Service;
 
 import by.wms.server.DTO.ProductDTO;
 import by.wms.server.Entity.*;
+import by.wms.server.Entity.Enum.Status;
 import by.wms.server.Exceptions.AppException;
 import by.wms.server.Repository.*;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,49 +18,72 @@ public class ProductService {
     private final WarehouseRepository warehouseRepository;
     private final RackRepository rackRepository;
     private final CellRepository cellRepository;
-    private final EmployeesRepository employeesRepository;
 
-    public void addProductToCell(int userId, ProductDTO productDTO) {
+    public void addProductToCell(int userId, List<ProductDTO> productDTOs) {
 
         Warehouse warehouse = warehouseRepository.getWarehouseByEmployeesId(userId);
-
+        if (warehouse == null) {
+            throw new AppException("No warehouse found for user ID: " + userId, HttpStatus.CONFLICT);
+        }
         List<Rack> racks = rackRepository.findByWarehouseId(warehouse.getId());
+        if (racks == null) {
+            throw new AppException("No racks found for user ID: " + userId, HttpStatus.CONFLICT);
+        }
+
+        for (ProductDTO productDTO : productDTOs) {
+            boolean productPlaced = false;
 
             for (Rack rack : racks) {
+                double usedCapacity = 0;
+                List<Cell> cells = cellRepository.findByRackId(rack.getId());
 
-                if (rack.getCapacity() >= productDTO.getWeight()) {
+                for (Cell cell : cells) {
+                    for (Product product : cell.getProducts()) {
+                        usedCapacity += product.getWeight();
+                    }
+                }
 
-                    List<Cell> cells = cellRepository.findByRackId(rack.getId());
+                double availableCapacity = rack.getCapacity() - usedCapacity;
 
-                    // Цикл по ячейкам
+                if (availableCapacity >= productDTO.getWeight()) {
                     for (Cell cell : cells) {
-                        // Проверка вместимости ячейки по габаритам
                         if (cell.getLength() >= productDTO.getLength() &&
                                 cell.getWidth() >= productDTO.getWidth() &&
                                 cell.getHeight() >= productDTO.getHeight()) {
 
-                            // Добавление продукта в ячейку
                             Product product = new Product();
                             product.setName(productDTO.getName());
                             product.setAmount(productDTO.getAmount());
                             product.setHeight(productDTO.getHeight());
                             product.setLength(productDTO.getLength());
+                            product.setWidth(productDTO.getWidth());
+                            product.setWeight(productDTO.getWeight());
                             product.setPrice(productDTO.getPrice());
                             product.setUnit(productDTO.getUnit());
-                            product.setWidth(productDTO.getWidth());
                             product.setBestBeforeDate(productDTO.getBestBeforeDate());
-                            product.setStatus(productDTO.getStatus());
+                            product.setStatus(Status.valueOf(String.valueOf(productDTO.getStatus())));
+
+                            product.getCells().add(cell);
                             productRepository.save(product);
 
-                            // Логика добавления продукта в ячейку (например, создание записи в таблице cell_has_product)
+                            cell.getProducts().add(product);
+                            cellRepository.save(cell);
 
-                            return; // Продукт добавлен, завершаем метод
+                            productPlaced = true;
+                            break;
                         }
+                    }
+
+                    if (productPlaced) {
+                        break;
                     }
                 }
             }
 
-        throw new AppException("No suitable cell found", HttpStatus.BAD_REQUEST);
+            if (!productPlaced) {
+                throw new AppException("No suitable rack or cell found for product: " + productDTO.getName(), HttpStatus.BAD_REQUEST);
+            }
+        }
     }
 
 }
