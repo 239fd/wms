@@ -1,5 +1,5 @@
 package by.wms.server.Entity.Enum;
 
 public enum Status {
-    accepted, verified, writeoff
+    accepted, nonverified, writeoff
 }

@@ -1,5 +1,6 @@
 package by.wms.server.DTO;
 
+import by.wms.server.Entity.Enum.Status;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -10,7 +11,8 @@ import java.sql.Date;
 @Getter
 @Setter
 public class ProductDTO {
-    private int id;
+
+    private int amountOfPosition;
     private double length;
     private double width;
     private double height;
@@ -18,7 +20,8 @@ public class ProductDTO {
     private String unit;
     private int amount;
     private double price;
-    private String status;
+    private Status status;
     private Date bestBeforeDate;
+    private double weight;
 
 }

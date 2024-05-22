@@ -17,4 +17,5 @@ public class SignUpDTO {
     private String firstName;
     private String secondName;
     private String surname;
+    private String organizationId;
 }

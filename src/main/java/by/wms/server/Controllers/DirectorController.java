@@ -1,6 +1,7 @@
 package by.wms.server.Controllers;
 
 import by.wms.server.DTO.*;
+import by.wms.server.Entity.Product;
 import by.wms.server.Entity.Rack;
 import by.wms.server.Exceptions.AppException;
 import by.wms.server.Service.CellService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -34,7 +36,7 @@ public class DirectorController {
             throw new AppException("This INN is already taken", HttpStatus.NOT_FOUND);
         }
         organizationService.createOrganization(organizationDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/warehouse")
@@ -47,7 +49,7 @@ public class DirectorController {
             throw new AppException("This name is used", HttpStatus.NOT_FOUND);
         }
         warehouseService.createWarehouse(warehouseDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/rack")
@@ -62,6 +64,12 @@ public class DirectorController {
 
         Rack rack = rackService.createRack(rackAndCellDTO, warehouseService.findByIdExtend(rackAndCellDTO.getNumber()));
         cellService.createCell(rackAndCellDTO, rack);
-        return ResponseEntity.ok(rackAndCellDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+//    @GetMapping("/docs")
+//    public ResponseEntity<?>getDocsInformation(@RequestBody DocsDTO docsDTO){
+//        List<Product> products = productService.getAll(docsDTO);
+//        return new ResponseEntity<>(products, HttpStatus.OK);
+//    }
 }

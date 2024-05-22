@@ -17,5 +17,6 @@ public class EmployeesDTO {
     private String secondName;
     private String surname;
     private Title title;
+    private String organizationId;
     private String token;
 }

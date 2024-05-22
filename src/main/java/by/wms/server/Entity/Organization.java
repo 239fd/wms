@@ -31,4 +31,7 @@ public class Organization {
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Warehouse> warehouses;
+
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Employees> employees;
 }

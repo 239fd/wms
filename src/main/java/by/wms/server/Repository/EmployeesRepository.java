@@ -1,6 +1,7 @@
 package by.wms.server.Repository;
 
 import by.wms.server.Entity.Employees;
+import by.wms.server.Entity.Organization;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -11,4 +11,6 @@ public interface OrganizationRepository extends JpaRepository<Organization, Inte
 
     Integer getOrganizationIdByINN(String INN);
 
+    Organization findOrganizationById(int id);
+
 }

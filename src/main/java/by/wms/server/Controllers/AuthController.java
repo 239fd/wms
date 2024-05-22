@@ -31,7 +31,6 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<EmployeesDTO> register(@RequestBody SignUpDTO signUpDTO) {
         EmployeesDTO employeesDTO = employeesService.register(signUpDTO);
-
         employeesDTO.setToken(userAuthProvider.createToken(signUpDTO.getLogin()));
         return ResponseEntity.created(URI.create("/users/" + employeesDTO.getLogin()))
                 .body(employeesDTO);
