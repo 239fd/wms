@@ -1,5 +1,6 @@
 package by.wms.server.Service;
 
+import by.wms.server.DTO.DocsDTO;
 import by.wms.server.DTO.ProductDTO;
 import by.wms.server.Entity.*;
 import by.wms.server.Entity.Enum.Status;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -86,4 +88,38 @@ public class ProductService {
         }
     }
 
+    public List<Product> getAll(DocsDTO docsDTO, int userId) {
+
+        Warehouse warehouse = warehouseRepository.getWarehouseByEmployeesId(userId);
+        if (warehouse == null) {
+            throw new AppException("No warehouse found for user ID: " + userId, HttpStatus.CONFLICT);
+        }
+
+        List<Rack> racks = rackRepository.findByWarehouseId(warehouse.getId());
+        if (racks == null || racks.isEmpty()) {
+            throw new AppException("No racks found for warehouse ID: " + warehouse.getId(), HttpStatus.CONFLICT);
+        }
+
+        List<Product> products = new ArrayList<>();
+        for (Rack rack : racks) {
+            List<Cell> cells = cellRepository.findByRackId(rack.getId());
+            for (Cell cell : cells) {
+                if (docsDTO.getAccepted()) {
+                    products.addAll(productRepository.getProductsByCellsAndStatus(cell, Status.accepted));
+                }
+                if (docsDTO.getWriteOff()) {
+                    products.addAll(productRepository.getProductsByCellsAndStatus(cell, Status.writeoff));
+                }
+                if (docsDTO.getNonVerified()) {
+                    products.addAll(productRepository.getProductsByCellsAndStatus(cell, Status.nonverified));
+                }
+            }
+        }
+
+        if (products.isEmpty()) {
+            throw new AppException("No products found for the given organization", HttpStatus.NOT_FOUND);
+        }
+
+        return products;
+    }
 }

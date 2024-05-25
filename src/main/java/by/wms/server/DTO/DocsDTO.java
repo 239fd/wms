@@ -9,8 +9,8 @@ import lombok.*;
 @Builder
 public class DocsDTO {
 
-    private boolean accepted;
-    private boolean writeOff;
-    private boolean nonVerified;
+    private Boolean accepted;
+    private Boolean writeOff;
+    private Boolean nonVerified;
 
 }

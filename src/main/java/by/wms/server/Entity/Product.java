@@ -1,6 +1,7 @@
 package by.wms.server.Entity;
 
 import by.wms.server.Entity.Enum.Status;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,7 @@ public class Product {
     private double weight;
 
     @ManyToMany(mappedBy = "products")
+    @JsonBackReference
     private Set<Cell> cells = new HashSet<>();
 
 }

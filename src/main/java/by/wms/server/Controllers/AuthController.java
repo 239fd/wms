@@ -1,5 +1,6 @@
 package by.wms.server.Controllers;
 
+import by.wms.server.API.ApiResponse;
 import by.wms.server.DTO.CredentialsDTO;
 import by.wms.server.DTO.EmployeesDTO;
 import by.wms.server.DTO.SignUpDTO;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.Collections;
 
 @RestController("api/v1")
 @RequiredArgsConstructor
@@ -21,13 +23,18 @@ public class AuthController {
     private final UserAuthProvider userAuthProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<EmployeesDTO> login(@RequestBody CredentialsDTO credentialsDTO){
+    public ResponseEntity<ApiResponse<EmployeesDTO>> login(@RequestBody CredentialsDTO credentialsDTO){
         EmployeesDTO employeesDTO = employeesService.login(credentialsDTO);
 
         employeesDTO.setToken(userAuthProvider.createToken(employeesDTO.getLogin()));
-        return ResponseEntity.ok(employeesDTO);
-    }
+        ApiResponse<EmployeesDTO> response = ApiResponse.<EmployeesDTO>builder()
+                .data(Collections.singletonList(employeesDTO))
+                .status(true)
+                .message("User successfully logged in")
+                .build();
 
+        return ResponseEntity.ok(response);
+    }
     @PostMapping("/register")
     public ResponseEntity<EmployeesDTO> register(@RequestBody SignUpDTO signUpDTO) {
         EmployeesDTO employeesDTO = employeesService.register(signUpDTO);

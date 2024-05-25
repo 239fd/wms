@@ -6,7 +6,6 @@ import by.wms.server.Repository.OrganizationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -32,11 +31,4 @@ public class OrganizationService {
 
     }
 
-    public List<Organization> getAllOrganizations() {
-        return organizationRepository.findAll();
-    }
-
-    public int getOrganizationIdByINN(String organizationINN) {
-        return organizationRepository.getOrganizationIdByINN(organizationINN);
-    }
 }

@@ -8,7 +8,6 @@ import by.wms.server.Repository.WarehouseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -25,12 +24,6 @@ public class WarehouseService {
         warehouse.setAddress(warehouseDTO.getAddress());
         warehouseRepository.save(warehouse);
 
-    }
-    public List<Warehouse> getAllWarehouses() {
-        return warehouseRepository.findAll();
-    }
-    public int getWarehouseIdByOrganizationINN(String organizationId) {
-        return warehouseRepository.getWarehouseIdByOrganizationINN(organizationId);
     }
 
     public boolean findByNameAndOrganization(String name, Organization organization) {

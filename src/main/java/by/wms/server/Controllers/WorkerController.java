@@ -17,9 +17,9 @@ public class WorkerController {
     private final ProductService productService;
 
     @PostMapping("/create")
-    public ResponseEntity<ProductDTO> takeProduct( @RequestBody List<ProductDTO> productDTO) {
-        System.out.println(productDTO.toString());
-        productService.addProductToCell(25, productDTO);
+    public ResponseEntity<ProductDTO> takeProduct(@RequestParam int userId, @RequestBody List<ProductDTO> productDTO) {
+
+        productService.addProductToCell(userId, productDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

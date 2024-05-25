@@ -36,6 +36,7 @@ public class EmployeesService {
     public EmployeesDTO login(CredentialsDTO credentials) {
         Employees employee = employeesRepository.findByLogin(credentials.getLogin())
                 .orElseThrow(()-> new AppException("Unknown user", HttpStatus.NOT_FOUND));
+        System.out.println(credentials.getPassword());
         if(passwordEncoder.matches(CharBuffer.wrap(credentials.getPassword()), employee.getPassword())){
             return employeesMapper.toEmployeesDTO(employee);
         }

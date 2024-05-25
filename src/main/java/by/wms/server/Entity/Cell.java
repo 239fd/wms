@@ -1,5 +1,6 @@
 package by.wms.server.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class Cell {
             joinColumns = { @JoinColumn(name = "cell_id") },
             inverseJoinColumns = { @JoinColumn(name = "product_id")}
     )
+    @JsonManagedReference
     private Set<Product> products = new HashSet<>();
 
 }
