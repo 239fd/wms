@@ -26,7 +26,7 @@ public class WorkerController {
         ApiResponse<TableDTO> response = ApiResponse.<TableDTO>builder()
                 .data(tableDTOS)
                 .status(true)
-                .message("Shipped")
+                .message("Information taken")
                 .build();
 
         return ResponseEntity.ok(response);

@@ -1,6 +1,5 @@
 package by.wms.server.Controllers;
 
-import by.wms.server.API.ApiResponse;
 import by.wms.server.DTO.ProductDTO;
 import by.wms.server.DTO.ShipDTO;
 import by.wms.server.DTO.TableDTO;

@@ -13,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -160,7 +162,7 @@ public class ProductService {
 
     }
 
-    public void shipProduct (int userId, List<ShipDTO> shipDTOs){
+    public void shipProduct(int userId, List<ShipDTO> shipDTOs) {
 
         Warehouse warehouse = warehouseRepository.getWarehouseByEmployeesId(userId);
         if (warehouse == null) {
@@ -202,5 +204,38 @@ public class ProductService {
                 throw new AppException("Product with ID: " + shipDTO.getNumber() + " not found", HttpStatus.BAD_REQUEST);
             }
         }
+    }
+
+    public void inventoryOfProduct(int userId, List<ShipDTO> shipDTOs) {
+
+        Warehouse warehouse = warehouseRepository.getWarehouseByEmployeesId(userId);
+        if (warehouse == null) {
+            throw new AppException("No warehouse found for user ID: " + userId, HttpStatus.NOT_FOUND);
+        }
+
+        List<Rack> racks = rackRepository.findByWarehouseId(warehouse.getId());
+        Set<Product> productsInWarehouse = new HashSet<>();
+
+        for (Rack rack : racks) {
+            List<Cell> cells = cellRepository.findByRackId(rack.getId());
+            for (Cell cell : cells) {
+                productsInWarehouse.addAll(cell.getProducts());
+            }
+        }
+
+        Set<Integer> shipProductNumbers = new HashSet<>();
+        for (ShipDTO shipDTO : shipDTOs) {
+            shipProductNumbers.add(shipDTO.getNumber());
+        }
+
+        for (Product product : productsInWarehouse) {
+            if (shipProductNumbers.contains(product.getId())) {
+                product.setStatus(Status.accepted);
+            } else {
+                product.setStatus(Status.nonverified);
+            }
+            productRepository.save(product);
+        }
+
     }
 }

@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-    List<Product> getProductsByStatus(Status status);
-
     List<Product> getProductsByCellsAndStatus(Cell cell, Status status);
 
 }
