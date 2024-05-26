@@ -2,6 +2,8 @@ package by.wms.server.Service;
 
 import by.wms.server.DTO.DocsDTO;
 import by.wms.server.DTO.ProductDTO;
+import by.wms.server.DTO.ShipDTO;
+import by.wms.server.DTO.TableDTO;
 import by.wms.server.Entity.*;
 import by.wms.server.Entity.Enum.Status;
 import by.wms.server.Exceptions.AppException;
@@ -22,6 +24,8 @@ public class ProductService {
     private final CellRepository cellRepository;
 
     public void addProductToCell(int userId, List<ProductDTO> productDTOs) {
+
+        List<Product> products = new ArrayList<>();
 
         Warehouse warehouse = warehouseRepository.getWarehouseByEmployeesId(userId);
         if (warehouse == null) {
@@ -72,6 +76,7 @@ public class ProductService {
                             cellRepository.save(cell);
 
                             productPlaced = true;
+                            products.add(product);
                             break;
                         }
                     }
@@ -121,5 +126,81 @@ public class ProductService {
         }
 
         return products;
+    }
+
+    public List<TableDTO> takeInfo(int userId) {
+
+        Warehouse warehouse = warehouseRepository.getWarehouseByEmployeesId(userId);
+        if (warehouse == null) {
+            throw new AppException("No warehouse found for user ID: " + userId, HttpStatus.CONFLICT);
+        }
+
+        List<Rack> racks = rackRepository.findByWarehouseId(warehouse.getId());
+        if (racks == null || racks.isEmpty()) {
+            throw new AppException("No racks found for warehouse ID: " + warehouse.getId(), HttpStatus.CONFLICT);
+        }
+
+        List<TableDTO> productInfoList = new ArrayList<>();
+
+        for (Rack rack : racks) {
+            List<Cell> cells = cellRepository.findByRackId(rack.getId());
+
+            for (Cell cell : cells) {
+                for (Product product : cell.getProducts()) {
+                    TableDTO productInfo = TableDTO.builder()
+                            .number(product.getId())
+                            .name(product.getName())
+                            .date(product.getBestBeforeDate())
+                            .build();
+                    productInfoList.add(productInfo);
+                }
+            }
+        }
+        return productInfoList;
+
+    }
+
+    public void shipProduct (int userId, List<ShipDTO> shipDTOs){
+
+        Warehouse warehouse = warehouseRepository.getWarehouseByEmployeesId(userId);
+        if (warehouse == null) {
+            throw new AppException("No warehouse found for user ID: " + userId, HttpStatus.CONFLICT);
+        }
+
+        List<Rack> racks = rackRepository.findByWarehouseId(warehouse.getId());
+        if (racks == null || racks.isEmpty()) {
+            throw new AppException("No racks found for warehouse ID: " + warehouse.getId(), HttpStatus.CONFLICT);
+        }
+
+        for (ShipDTO shipDTO : shipDTOs) {
+            boolean productRemoved = false;
+
+            for (Rack rack : racks) {
+                List<Cell> cells = cellRepository.findByRackId(rack.getId());
+
+                for (Cell cell : cells) {
+                    for (Product product : cell.getProducts()) {
+                        if (product.getId() == shipDTO.getNumber()) {
+                            cell.getProducts().remove(product);
+                            productRepository.delete(product);
+                            cellRepository.save(cell);
+
+                            productRemoved = true;
+                            break;
+                        }
+                    }
+                    if (productRemoved) {
+                        break;
+                    }
+                }
+                if (productRemoved) {
+                    break;
+                }
+            }
+
+            if (!productRemoved) {
+                throw new AppException("Product with ID: " + shipDTO.getNumber() + " not found", HttpStatus.BAD_REQUEST);
+            }
+        }
     }
 }

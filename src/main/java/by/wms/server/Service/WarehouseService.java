@@ -17,6 +17,7 @@ public class WarehouseService {
     private final WarehouseRepository warehouseRepository;
 
     public void createWarehouse(WarehouseDTO warehouseDTO) {
+
         Warehouse warehouse = new Warehouse();
         Organization organization = repository.getOrganizationByINN(warehouseDTO.getOrganizationINN());
         warehouse.setOrganization(organization);
