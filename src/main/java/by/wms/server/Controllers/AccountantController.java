@@ -20,11 +20,11 @@ public class AccountantController {
     private final ProductService productService;
 
     @PutMapping("/inventory")
-    public ResponseEntity<ApiResponse<ShipDTO>> inventory(@RequestParam int userId, @RequestBody List<ShipDTO> shipDTO){
+    public ResponseEntity<ApiResponse<List<ShipDTO>>> inventory(@RequestParam int userId, @RequestBody List<ShipDTO> shipDTO){
 
         productService.inventoryOfProduct(userId, shipDTO);
 
-        ApiResponse<ShipDTO> response = ApiResponse.<ShipDTO>builder()
+        ApiResponse<List<ShipDTO>> response = ApiResponse.<List<ShipDTO>>builder()
                 .data(shipDTO)
                 .status(true)
                 .message("Inventory completed")
@@ -35,11 +35,11 @@ public class AccountantController {
     }
 
     @GetMapping("/revaluation")
-    public ResponseEntity<ApiResponse<TableDTO>> takeInfo(@RequestParam int userId) {
+    public ResponseEntity<ApiResponse<List<TableDTO>>> takeInfo(@RequestParam int userId) {
 
         List<TableDTO> tableDTOS = productService.takeInfo(userId);
 
-        ApiResponse<TableDTO> response = ApiResponse.<TableDTO>builder()
+        ApiResponse<List<TableDTO>> response = ApiResponse.<List<TableDTO>>builder()
                 .data(tableDTOS)
                 .status(true)
                 .message("Information taken")
@@ -50,11 +50,11 @@ public class AccountantController {
     }
 
     @PutMapping("/writeoff")
-    public ResponseEntity<ApiResponse<WriteOffDTO>> writeOff(@RequestParam int userId, @RequestBody List<WriteOffDTO> writeOffDTO) {
+    public ResponseEntity<ApiResponse<List<WriteOffDTO>>> writeOff(@RequestParam int userId, @RequestBody List<WriteOffDTO> writeOffDTO) {
 
         productService.writeOff(userId, writeOffDTO);
 
-        ApiResponse<WriteOffDTO> response = ApiResponse.<WriteOffDTO>builder()
+        ApiResponse<List<WriteOffDTO>> response = ApiResponse.<List<WriteOffDTO>>builder()
                 .data(writeOffDTO)
                 .status(true)
                 .message("Write Off completed")
@@ -64,11 +64,11 @@ public class AccountantController {
     }
 
     @PutMapping("/revaluation")
-    public ResponseEntity<ApiResponse<RevaluationDTO>> revaluate(@RequestParam int userId, @RequestBody List<RevaluationDTO> revaluationDTO){
+    public ResponseEntity<ApiResponse<List<RevaluationDTO>>> revaluate(@RequestParam int userId, @RequestBody List<RevaluationDTO> revaluationDTO){
 
         productService.revalueProduct(userId, revaluationDTO);
 
-        ApiResponse<RevaluationDTO> response = ApiResponse.<RevaluationDTO>builder()
+        ApiResponse<List<RevaluationDTO>> response = ApiResponse.<List<RevaluationDTO>>builder()
                 .data(revaluationDTO)
                 .status(true)
                 .message("Product revalued successfully")

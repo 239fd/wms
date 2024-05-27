@@ -38,7 +38,7 @@ public class DirectorController {
         organizationService.createOrganization(organizationDTO);
 
         ApiResponse<OrganizationDTO> response = ApiResponse.<OrganizationDTO>builder()
-                .data(Collections.singletonList(organizationDTO))
+                .data(organizationDTO)
                 .status(true)
                 .message("Organization created successfully")
                 .build();
@@ -57,7 +57,7 @@ public class DirectorController {
         }
         warehouseService.createWarehouse(warehouseDTO);
         ApiResponse<WarehouseDTO> response = ApiResponse.<WarehouseDTO>builder()
-                .data(Collections.singletonList(warehouseDTO))
+                .data(warehouseDTO)
                 .status(true)
                 .message("Warehouse created successfully" )
                 .build();
@@ -78,7 +78,7 @@ public class DirectorController {
         Rack rack = rackService.createRack(rackAndCellDTO, warehouseService.findByIdExtend(rackAndCellDTO.getNumber()));
         cellService.createCell(rackAndCellDTO, rack);
         ApiResponse<RackAndCellDTO> response = ApiResponse.<RackAndCellDTO>builder()
-                .data(Collections.singletonList(rackAndCellDTO))
+                .data(rackAndCellDTO)
                 .status(true)
                 .message("Rack created successfully")
                 .build();
@@ -96,7 +96,7 @@ public class DirectorController {
         List<Product> products = productService.getAll(docsDTO, userId);
 
         ApiResponse<Product> response = ApiResponse.<Product>builder()
-                .data(products)
+                .data((Product) products)
                 .status(true)
                 .message("Found")
                 .build();

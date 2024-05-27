@@ -12,7 +12,7 @@ import java.util.List;
 @ToString
 public class ApiResponse<T> {
 
-    private List<T> data;
+    private T data;
     private boolean status;
     private String message;
 

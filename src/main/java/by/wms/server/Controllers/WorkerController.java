@@ -19,11 +19,11 @@ public class WorkerController {
     private final ProductService productService;
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<TableDTO>> takeInfo(@RequestParam int userId) {
+    public ResponseEntity<ApiResponse<List<TableDTO>>> takeInfo(@RequestParam int userId) {
 
-        List<TableDTO> tableDTOS = productService.takeInfo(userId);
+        List<TableDTO> tableDTOS =  productService.takeInfo(userId);
 
-        ApiResponse<TableDTO> response = ApiResponse.<TableDTO>builder()
+        ApiResponse<List<TableDTO>> response = ApiResponse.<List<TableDTO>>builder()
                 .data(tableDTOS)
                 .status(true)
                 .message("Information taken")
@@ -33,11 +33,12 @@ public class WorkerController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<ProductDTO>> takeProduct(@RequestParam int userId, @RequestBody List<ProductDTO> productDTO) {
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> takeProduct(@RequestParam int userId, @RequestBody List<ProductDTO> productDTO) {
 
         productService.addProductToCell(userId, productDTO);
 
-        ApiResponse<ProductDTO> response = ApiResponse.<ProductDTO>builder()
+
+        ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
                 .data(productDTO)
                 .status(true)
                 .message("Taken")
@@ -47,11 +48,11 @@ public class WorkerController {
     }
 
     @DeleteMapping("/ship")
-    public ResponseEntity<ApiResponse<ShipDTO>> shipProduct(@RequestParam int userId, @RequestBody List<ShipDTO> shipDTO) {
+    public ResponseEntity<ApiResponse<List<ShipDTO>>> shipProduct(@RequestParam int userId, @RequestBody List<ShipDTO> shipDTO) {
 
         productService.shipProduct(userId, shipDTO);
 
-        ApiResponse<ShipDTO> response = ApiResponse.<ShipDTO>builder()
+        ApiResponse<List<ShipDTO>> response = ApiResponse.<List<ShipDTO>>builder()
                 .data(shipDTO)
                 .status(true)
                 .message("Shipped")

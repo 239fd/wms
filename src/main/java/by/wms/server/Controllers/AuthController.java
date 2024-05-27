@@ -28,7 +28,7 @@ public class AuthController {
 
         employeesDTO.setToken(userAuthProvider.createToken(employeesDTO.getLogin()));
         ApiResponse<EmployeesDTO> response = ApiResponse.<EmployeesDTO>builder()
-                .data(Collections.singletonList(employeesDTO))
+                .data(employeesDTO)
                 .status(true)
                 .message("User successfully logged in")
                 .build();
