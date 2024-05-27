@@ -1,9 +1,6 @@
 package by.wms.server.Service;
 
-import by.wms.server.DTO.DocsDTO;
-import by.wms.server.DTO.ProductDTO;
-import by.wms.server.DTO.ShipDTO;
-import by.wms.server.DTO.TableDTO;
+import by.wms.server.DTO.*;
 import by.wms.server.Entity.*;
 import by.wms.server.Entity.Enum.Status;
 import by.wms.server.Exceptions.AppException;
@@ -237,5 +234,65 @@ public class ProductService {
             productRepository.save(product);
         }
 
+    }
+
+    public void writeOff(int userId, List<WriteOffDTO> writeOffDTOS) {
+
+        Warehouse warehouse = warehouseRepository.getWarehouseByEmployeesId(userId);
+        if (warehouse == null) {
+            throw new AppException("No warehouse found for user ID: " + userId, HttpStatus.NOT_FOUND);
+        }
+
+        List<Rack> racks = rackRepository.findByWarehouseId(warehouse.getId());
+        Set<Product> productsInWarehouse = new HashSet<>();
+
+        for (Rack rack : racks) {
+            List<Cell> cells = cellRepository.findByRackId(rack.getId());
+            for (Cell cell : cells) {
+                productsInWarehouse.addAll(cell.getProducts());
+            }
+        }
+
+        Set<Integer> writeOffProductNumbers = new HashSet<>();
+        for (WriteOffDTO writeOffDTO : writeOffDTOS) {
+            writeOffProductNumbers.add(writeOffDTO.getNumber());
+        }
+
+        for (Product product : productsInWarehouse) {
+            product.setStatus(Status.writeoff);
+            productRepository.save(product);
+        }
+
+    }
+
+    public void revalueProduct(int userId, List<RevaluationDTO> revaluationDTOs) {
+
+        Warehouse warehouse = warehouseRepository.getWarehouseByEmployeesId(userId);
+        if (warehouse == null) {
+            throw new AppException("No warehouse found for user ID: " + userId, HttpStatus.CONFLICT);
+        }
+
+        for (RevaluationDTO dto : revaluationDTOs) {
+            boolean productFound = false;
+
+            for (Rack rack : warehouse.getRacks()) {
+                for (Cell cell : rack.getCells()) {
+                    for (Product product : cell.getProducts()) {
+                        if (product.getId() == dto.getNumber()) {
+                            product.setPrice(dto.getCost());
+                            productRepository.save(product);
+                            productFound = true;
+                            break;
+                        }
+                    }
+                    if (productFound) break;
+                }
+                if (productFound) break;
+            }
+
+            if (!productFound) {
+                throw new AppException("Product with number " + dto.getNumber() + " not found in warehouse for user ID: " + userId, HttpStatus.BAD_REQUEST);
+            }
+        }
     }
 }

@@ -30,7 +30,6 @@ public class WorkerController {
                 .build();
 
         return ResponseEntity.ok(response);
-
     }
 
     @PostMapping("/create")
