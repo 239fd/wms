@@ -8,6 +8,7 @@ import lombok.*;
 @Data
 public class CredentialsDTO {
 
+    private int id;
     private String login;
     private char[] password;
 }

@@ -10,6 +10,7 @@ import lombok.*;
 @Builder
 public class EmployeesDTO {
 
+    private int id;
     private String login;
     private String firstName;
     private String password;

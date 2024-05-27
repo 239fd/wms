@@ -36,9 +36,12 @@ public class EmployeesService {
     public EmployeesDTO login(CredentialsDTO credentials) {
         Employees employee = employeesRepository.findByLogin(credentials.getLogin())
                 .orElseThrow(()-> new AppException("Unknown user", HttpStatus.NOT_FOUND));
-        System.out.println(credentials.getPassword());
+
         if(passwordEncoder.matches(CharBuffer.wrap(credentials.getPassword()), employee.getPassword())){
-            return employeesMapper.toEmployeesDTO(employee);
+            return EmployeesDTO.builder()
+                    .id(employee.getId())
+                    .login(employee.getLogin())
+                    .build();
         }
 
         throw new AppException("Wrong password or login", HttpStatus.UNAUTHORIZED);
@@ -62,9 +65,12 @@ public class EmployeesService {
         employees.setOrganization(organizationRepository.getOrganizationByINN((signUpDTO.getOrganizationId()).substring(0,9)));
         employees.setPassword(passwordEncoder.encode(CharBuffer.wrap(signUpDTO.getPassword())));
 
-        employeesRepository.save(employees);
+        employees = employeesRepository.save(employees);
 
-        return employeesMapper.toEmployeesDTO(employees);
+        return EmployeesDTO.builder()
+                .id(employees.getId())
+                .login(employees.getLogin())
+                .build();
     }
 
 
