@@ -10,5 +10,6 @@ import lombok.*;
 public class ShipDTO {
 
     private int number;
+    private int tax;
 
 }
