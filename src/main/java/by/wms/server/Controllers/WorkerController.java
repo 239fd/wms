@@ -6,11 +6,13 @@ import by.wms.server.DTO.ShipDTO;
 import by.wms.server.DTO.TableDTO;
 import by.wms.server.Service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600L)
 @RestController
 @RequestMapping("/api/v1/worker")
 @RequiredArgsConstructor
@@ -19,8 +21,9 @@ public class WorkerController {
     private final ProductService productService;
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<List<TableDTO>>> takeInfo(@RequestParam int userId) {
+    public ResponseEntity<ApiResponse<List<TableDTO>>> takeInfo(@RequestParam int userId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
 
+        System.out.println(token);
         List<TableDTO> tableDTOS =  productService.takeInfo(userId);
 
         ApiResponse<List<TableDTO>> response = ApiResponse.<List<TableDTO>>builder()
@@ -33,7 +36,8 @@ public class WorkerController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<List<ProductDTO>>> takeProduct(@RequestParam int userId, @RequestBody List<ProductDTO> productDTO) {
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> takeProduct(@RequestParam int userId, @RequestBody List<ProductDTO> productDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        System.out.println(token);
 
         productService.addProductToCell(userId, productDTO);
 
@@ -48,7 +52,8 @@ public class WorkerController {
     }
 
     @DeleteMapping("/ship")
-    public ResponseEntity<ApiResponse<List<ShipDTO>>> shipProduct(@RequestParam int userId, @RequestBody List<ShipDTO> shipDTO) {
+    public ResponseEntity<ApiResponse<List<ShipDTO>>> shipProduct(@RequestParam int userId, @RequestBody List<ShipDTO> shipDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        System.out.println(token);
 
         productService.shipProduct(userId, shipDTO);
 

@@ -1,5 +1,6 @@
 package by.wms.server.Mappers;
 
+import by.wms.server.DTO.CredentialsDTO;
 import by.wms.server.DTO.EmployeesDTO;
 import by.wms.server.DTO.SignUpDTO;
 import by.wms.server.Entity.Employees;

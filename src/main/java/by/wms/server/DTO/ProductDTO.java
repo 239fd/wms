@@ -12,7 +12,6 @@ import java.sql.Date;
 @Setter
 public class ProductDTO {
 
-    private int amountOfPosition;
     private double length;
     private double width;
     private double height;

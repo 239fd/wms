@@ -41,6 +41,7 @@ public class EmployeesService {
             return EmployeesDTO.builder()
                     .id(employee.getId())
                     .login(employee.getLogin())
+                    .title(employee.getTitle())
                     .build();
         }
 

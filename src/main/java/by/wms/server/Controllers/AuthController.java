@@ -8,14 +8,13 @@ import by.wms.server.Service.EmployeesService;
 import by.wms.server.config.UserAuthProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Collections;
 
-@RestController("api/v1")
+@CrossOrigin(maxAge = 3600L)
+@RestController
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -36,10 +35,14 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("/register")
-    public ResponseEntity<EmployeesDTO> register(@RequestBody SignUpDTO signUpDTO) {
+    public ResponseEntity<ApiResponse<SignUpDTO>> register(@RequestBody SignUpDTO signUpDTO) {
         EmployeesDTO employeesDTO = employeesService.register(signUpDTO);
         employeesDTO.setToken(userAuthProvider.createToken(signUpDTO.getLogin()));
-        return ResponseEntity.created(URI.create("/users/" + employeesDTO.getLogin()))
-                .body(employeesDTO);
+        ApiResponse<SignUpDTO> response = ApiResponse.<SignUpDTO>builder()
+                .data(signUpDTO)
+                .status(true)
+                .message("User successfully logged in")
+                .build();
+        return ResponseEntity.ok(response);
     }
 }

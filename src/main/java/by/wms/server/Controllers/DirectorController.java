@@ -18,8 +18,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@CrossOrigin(maxAge = 3600L)
 @RestController
-@RequestMapping("api/v1/director")
+@RequestMapping("/api/v1/director")
 @RequiredArgsConstructor
 public class DirectorController {
 

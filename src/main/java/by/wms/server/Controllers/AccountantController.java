@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(maxAge = 3600L)
 @RestController
 @RequestMapping("/api/v1/accountant")
 @RequiredArgsConstructor
