@@ -63,7 +63,6 @@ public class ProductService {
         return dtos;
     }
 
-
     public void addProductToCell(int userId, List<ProductDTO> productDTOs) {
 
         List<Product> products = new ArrayList<>();
@@ -287,6 +286,34 @@ public class ProductService {
                 throw new AppException("Product with ID: " + shipDTO.getNumber() + " not found", HttpStatus.BAD_REQUEST);
             }
         }
+    }
+
+    public List<InventoryDocsDTO> findAllFromShipDTO(int userId, List<ShipDTO> dto){
+
+        Warehouse warehouse = warehouseRepository.getWarehouseByEmployeesId(userId);
+        if (warehouse == null) {
+            throw new AppException("No warehouse found for user ID: " + userId, HttpStatus.CONFLICT);
+        }
+
+        List<Rack> racks = rackRepository.findByWarehouseId(warehouse.getId());
+        if (racks == null || racks.isEmpty()) {
+            throw new AppException("No racks found for warehouse ID: " + warehouse.getId(), HttpStatus.CONFLICT);
+        }
+
+        List<InventoryDocsDTO> dtos = new ArrayList<>();
+        List <Product> products = new ArrayList<>();
+
+        for (Rack rack : racks) {
+            List<Cell> cells = cellRepository.findByRackId(rack.getId());
+            for (Cell cell : cells) {
+                products.addAll(productRepository.getProductsByCells(cell));
+                for (int i = 0; i < products.size(); i++){
+                    InventoryDocsDTO dto1 = new InventoryDocsDTO(products.get(i).getName(), products.get(i).getStatus());
+                    dtos.add(dto1);
+                }
+            }
+        }
+        return dtos;
     }
 
     public void inventoryOfProduct(int userId, List<ShipDTO> shipDTOs) {

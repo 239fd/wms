@@ -18,12 +18,13 @@ public class AccountantController {
     private final ProductService productService;
 
     @PutMapping("/inventory")
-    public ResponseEntity<ApiResponse<List<ShipDTO>>> inventory(@RequestParam int userId, @RequestBody List<ShipDTO> shipDTO){
+    public ResponseEntity<ApiResponse<List<InventoryDocsDTO>>> inventory(@RequestParam int userId, @RequestBody List<ShipDTO> shipDTO){
 
         productService.inventoryOfProduct(userId, shipDTO);
 
-        ApiResponse<List<ShipDTO>> response = ApiResponse.<List<ShipDTO>>builder()
-                .data(shipDTO)
+        List<InventoryDocsDTO> dto = productService.findAllFromShipDTO(userId, shipDTO);
+        ApiResponse<List<InventoryDocsDTO>> response = ApiResponse.<List<InventoryDocsDTO>>builder()
+                .data(dto)
                 .status(true)
                 .message("Inventory completed")
                 .build();
