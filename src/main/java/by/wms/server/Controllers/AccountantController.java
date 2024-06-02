@@ -1,13 +1,11 @@
 package by.wms.server.Controllers;
 
 import by.wms.server.API.ApiResponse;
-import by.wms.server.DTO.RevaluationDTO;
-import by.wms.server.DTO.ShipDTO;
-import by.wms.server.DTO.TableDTO;
-import by.wms.server.DTO.WriteOffDTO;
+import by.wms.server.DTO.*;
 import by.wms.server.Service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,21 +33,6 @@ public class AccountantController {
 
     }
 
-    @GetMapping("/revaluation")
-    public ResponseEntity<ApiResponse<List<TableDTO>>> takeInfo(@RequestParam int userId) {
-
-        List<TableDTO> tableDTOS = productService.takeInfo(userId);
-
-        ApiResponse<List<TableDTO>> response = ApiResponse.<List<TableDTO>>builder()
-                .data(tableDTOS)
-                .status(true)
-                .message("Information taken")
-                .build();
-
-        return ResponseEntity.ok(response);
-
-    }
-
     @PutMapping("/writeoff")
     public ResponseEntity<ApiResponse<List<WriteOffDTO>>> writeOff(@RequestParam int userId, @RequestBody List<WriteOffDTO> writeOffDTO) {
 
@@ -65,12 +48,13 @@ public class AccountantController {
     }
 
     @PutMapping("/revaluation")
-    public ResponseEntity<ApiResponse<List<RevaluationDTO>>> revaluate(@RequestParam int userId, @RequestBody List<RevaluationDTO> revaluationDTO){
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> revaluate(@RequestParam int userId, @RequestBody List<RevaluationDTO> revaluationDTO){
 
         productService.revalueProduct(userId, revaluationDTO);
+        List<ProductDTO> dto = productService.findAllFromDTO(userId, revaluationDTO);
 
-        ApiResponse<List<RevaluationDTO>> response = ApiResponse.<List<RevaluationDTO>>builder()
-                .data(revaluationDTO)
+        ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
+                .data(dto)
                 .status(true)
                 .message("Product revalued successfully")
                 .build();

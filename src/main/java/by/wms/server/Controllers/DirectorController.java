@@ -88,16 +88,16 @@ public class DirectorController {
     }
 
     @GetMapping("/docs")
-    public ResponseEntity<ApiResponse<Product>> getDocsInformation(
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> getDocsInformation(
             @RequestParam Boolean accepted,
             @RequestParam Boolean writeoff,
             @RequestParam Boolean nonverified,
             @RequestParam int userId) {
         DocsDTO docsDTO = new DocsDTO(accepted, writeoff, nonverified);
-        List<Product> products = productService.getAll(docsDTO, userId);
+        List<ProductDTO> products = productService.getAll(docsDTO, userId);
 
-        ApiResponse<Product> response = ApiResponse.<Product>builder()
-                .data((Product) products)
+        ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
+                .data(products)
                 .status(true)
                 .message("Found")
                 .build();

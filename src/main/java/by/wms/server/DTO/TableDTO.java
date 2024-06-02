@@ -13,6 +13,6 @@ public class TableDTO {
 
     private int number;
     private String name;
-    private Date date;
+    private int amount;
 
 }

@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +18,28 @@ public class ProductService {
     private final WarehouseRepository warehouseRepository;
     private final RackRepository rackRepository;
     private final CellRepository cellRepository;
+
+    public List<ProductDTO> findAllFromDTO(int userId, List<RevaluationDTO> dto){
+        Warehouse warehouse = warehouseRepository.getWarehouseByEmployeesId(userId);
+        if (warehouse == null) {
+            throw new AppException("No warehouse found for user ID: " + userId, HttpStatus.CONFLICT);
+        }
+
+        List<Rack> racks = rackRepository.findByWarehouseId(warehouse.getId());
+        if (racks == null || racks.isEmpty()) {
+            throw new AppException("No racks found for warehouse ID: " + warehouse.getId(), HttpStatus.CONFLICT);
+        }
+
+        List<ProductDTO> dtos = new ArrayList<>();
+
+        for (RevaluationDTO revaluationDTO : dto) {
+            Product product = productRepository.findAllById(revaluationDTO.getNumber());
+            ProductDTO dto1 = new ProductDTO(product.getLength(), product.getWidth(), product.getHeight(), product.getName(), product.getUnit(), product.getAmount(), product.getPrice(), product.getStatus(), product.getWeight());
+            dtos.add(dto1);
+        }
+
+        return dtos;
+    }
 
     public void addProductToCell(int userId, List<ProductDTO> productDTOs) {
 
@@ -65,7 +84,6 @@ public class ProductService {
                             product.setWeight(productDTO.getWeight());
                             product.setPrice(productDTO.getPrice());
                             product.setUnit(productDTO.getUnit());
-                            product.setBestBeforeDate(productDTO.getBestBeforeDate());
                             product.setStatus(Status.valueOf(String.valueOf(productDTO.getStatus())));
 
                             product.getCells().add(cell);
@@ -92,30 +110,75 @@ public class ProductService {
         }
     }
 
-    public List<Product> getAll(DocsDTO docsDTO, int userId) {
+    public List<ProductDTO> getAll(DocsDTO docsDTO, int userId) {
+
+        List<Product> products = new ArrayList<>();
+        List<ProductDTO> productDTOs = new ArrayList<>();
 
         Warehouse warehouse = warehouseRepository.getWarehouseByEmployeesId(userId);
         if (warehouse == null) {
             throw new AppException("No warehouse found for user ID: " + userId, HttpStatus.CONFLICT);
         }
-
+        System.out.println("1");
         List<Rack> racks = rackRepository.findByWarehouseId(warehouse.getId());
         if (racks == null || racks.isEmpty()) {
             throw new AppException("No racks found for warehouse ID: " + warehouse.getId(), HttpStatus.CONFLICT);
         }
+        System.out.println("2");
 
-        List<Product> products = new ArrayList<>();
         for (Rack rack : racks) {
             List<Cell> cells = cellRepository.findByRackId(rack.getId());
             for (Cell cell : cells) {
                 if (docsDTO.getAccepted()) {
                     products.addAll(productRepository.getProductsByCellsAndStatus(cell, Status.accepted));
+                    for(int i = 0; i < products.toArray().length; i++){
+                        ProductDTO productInfo = ProductDTO.builder()
+                                .name(products.get(i).getName())
+                                .unit(products.get(i).getUnit())
+                                .status(products.get(i).getStatus())
+                                .amount(products.get(i).getAmount())
+                                .price(products.get(i).getPrice())
+                                .length(products.get(i).getLength())
+                                .width(products.get(i).getWidth())
+                                .height(products.get(i).getHeight())
+                                .weight(products.get(i).getWeight())
+                                .build();
+                        productDTOs.add(productInfo);
+                    }
                 }
                 if (docsDTO.getWriteOff()) {
                     products.addAll(productRepository.getProductsByCellsAndStatus(cell, Status.writeoff));
+                    for(int i = 0; i < products.toArray().length; i++){
+                        ProductDTO productInfo = ProductDTO.builder()
+                                .name(products.get(i).getName())
+                                .unit(products.get(i).getUnit())
+                                .status(products.get(i).getStatus())
+                                .amount(products.get(i).getAmount())
+                                .price(products.get(i).getPrice())
+                                .length(products.get(i).getLength())
+                                .width(products.get(i).getWidth())
+                                .height(products.get(i).getHeight())
+                                .weight(products.get(i).getWeight())
+                                .build();
+                        productDTOs.add(productInfo);
+                    }
                 }
                 if (docsDTO.getNonVerified()) {
                     products.addAll(productRepository.getProductsByCellsAndStatus(cell, Status.nonverified));
+                    for(int i = 0; i < products.toArray().length; i++){
+                        ProductDTO productInfo = ProductDTO.builder()
+                                .name(products.get(i).getName())
+                                .unit(products.get(i).getUnit())
+                                .status(products.get(i).getStatus())
+                                .amount(products.get(i).getAmount())
+                                .price(products.get(i).getPrice())
+                                .length(products.get(i).getLength())
+                                .width(products.get(i).getWidth())
+                                .height(products.get(i).getHeight())
+                                .weight(products.get(i).getWeight())
+                                .build();
+                        productDTOs.add(productInfo);
+                    }
                 }
             }
         }
@@ -124,7 +187,7 @@ public class ProductService {
             throw new AppException("No products found for the given organization", HttpStatus.NOT_FOUND);
         }
 
-        return products;
+        return productDTOs;
     }
 
     public List<TableDTO> takeInfo(int userId) {
@@ -149,7 +212,7 @@ public class ProductService {
                     TableDTO productInfo = TableDTO.builder()
                             .number(product.getId())
                             .name(product.getName())
-                            .date(product.getBestBeforeDate())
+                            .amount(product.getAmount())
                             .build();
                     productInfoList.add(productInfo);
                 }
@@ -272,6 +335,26 @@ public class ProductService {
             throw new AppException("No warehouse found for user ID: " + userId, HttpStatus.CONFLICT);
         }
 
+        for (RevaluationDTO dto : revaluationDTOs) {
+            boolean productFound = false;
+
+            for (Rack rack : warehouse.getRacks()) {
+                for (Cell cell : rack.getCells()) {
+                    for (Product product : cell.getProducts()) {
+                        if (product.getId() == dto.getNumber()) {
+                            productFound = true;
+                            break;
+                        }
+                    }
+                    if (productFound) break;
+                }
+                if (productFound) break;
+            }
+
+            if (!productFound) {
+                throw new AppException("Product with number " + dto.getNumber() + " not found in warehouse for user ID: " + userId, HttpStatus.BAD_REQUEST);
+            }
+        }
         for (RevaluationDTO dto : revaluationDTOs) {
             boolean productFound = false;
 

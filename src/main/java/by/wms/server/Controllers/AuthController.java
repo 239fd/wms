@@ -35,11 +35,11 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<SignUpDTO>> register(@RequestBody SignUpDTO signUpDTO) {
+    public ResponseEntity<ApiResponse<EmployeesDTO>> register(@RequestBody SignUpDTO signUpDTO) {
         EmployeesDTO employeesDTO = employeesService.register(signUpDTO);
         employeesDTO.setToken(userAuthProvider.createToken(signUpDTO.getLogin()));
-        ApiResponse<SignUpDTO> response = ApiResponse.<SignUpDTO>builder()
-                .data(signUpDTO)
+        ApiResponse<EmployeesDTO> response = ApiResponse.<EmployeesDTO>builder()
+                .data(employeesDTO)
                 .status(true)
                 .message("User successfully logged in")
                 .build();

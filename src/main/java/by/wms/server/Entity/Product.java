@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,9 +46,6 @@ public class Product {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
-
-    @Column(name = "bestbeforedate")
-    private Date bestBeforeDate;
 
     @Column(name = "weight")
     private double weight;

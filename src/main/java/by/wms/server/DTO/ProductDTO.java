@@ -3,7 +3,6 @@ package by.wms.server.DTO;
 import by.wms.server.Entity.Enum.Status;
 import lombok.*;
 
-import java.sql.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,7 +19,6 @@ public class ProductDTO {
     private int amount;
     private double price;
     private Status status;
-    private Date bestBeforeDate;
     private double weight;
 
 }
