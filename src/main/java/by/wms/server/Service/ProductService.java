@@ -41,6 +41,29 @@ public class ProductService {
         return dtos;
     }
 
+    public List<WriteOffActDTO> findAllFromWriteoffDTO(int userId, List<WriteOffDTO> dto){
+        Warehouse warehouse = warehouseRepository.getWarehouseByEmployeesId(userId);
+        if (warehouse == null) {
+            throw new AppException("No warehouse found for user ID: " + userId, HttpStatus.CONFLICT);
+        }
+
+        List<Rack> racks = rackRepository.findByWarehouseId(warehouse.getId());
+        if (racks == null || racks.isEmpty()) {
+            throw new AppException("No racks found for warehouse ID: " + warehouse.getId(), HttpStatus.CONFLICT);
+        }
+
+        List<WriteOffActDTO> dtos = new ArrayList<>();
+
+        for (WriteOffDTO writeOffDTO : dto) {
+            Product product = productRepository.findAllById(writeOffDTO.getNumber());
+            WriteOffActDTO dto1 = new WriteOffActDTO(product.getName(), product.getUnit(), product.getAmount(), product.getPrice(), writeOffDTO.getReason());
+            dtos.add(dto1);
+        }
+
+        return dtos;
+    }
+
+
     public void addProductToCell(int userId, List<ProductDTO> productDTOs) {
 
         List<Product> products = new ArrayList<>();

@@ -5,7 +5,6 @@ import by.wms.server.DTO.*;
 import by.wms.server.Service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,12 +33,14 @@ public class AccountantController {
     }
 
     @PutMapping("/writeoff")
-    public ResponseEntity<ApiResponse<List<WriteOffDTO>>> writeOff(@RequestParam int userId, @RequestBody List<WriteOffDTO> writeOffDTO) {
+    public ResponseEntity<ApiResponse<List<WriteOffActDTO>>> writeOff(@RequestParam int userId, @RequestBody List<WriteOffDTO> writeOffDTO) {
 
         productService.writeOff(userId, writeOffDTO);
+        List<WriteOffActDTO> dto = productService.findAllFromWriteoffDTO(userId, writeOffDTO);
 
-        ApiResponse<List<WriteOffDTO>> response = ApiResponse.<List<WriteOffDTO>>builder()
-                .data(writeOffDTO)
+
+        ApiResponse<List<WriteOffActDTO>> response = ApiResponse.<List<WriteOffActDTO>>builder()
+                .data(dto)
                 .status(true)
                 .message("Write Off completed")
                 .build();
