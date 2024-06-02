@@ -428,4 +428,27 @@ public class ProductService {
             }
         }
     }
+
+    public List<ProductDTO> findAllForShipping(int userId, List<ShipDTO> shipDTO) {
+
+        Warehouse warehouse = warehouseRepository.getWarehouseByEmployeesId(userId);
+        if (warehouse == null) {
+            throw new AppException("No warehouse found for user ID: " + userId, HttpStatus.CONFLICT);
+        }
+
+        List<Rack> racks = rackRepository.findByWarehouseId(warehouse.getId());
+        if (racks == null || racks.isEmpty()) {
+            throw new AppException("No racks found for warehouse ID: " + warehouse.getId(), HttpStatus.CONFLICT);
+        }
+
+        List<ProductDTO> dtos = new ArrayList<>();
+
+        for (ShipDTO dto : shipDTO) {
+            Product product = productRepository.findAllById(dto.getNumber());
+            ProductDTO dto1 = new ProductDTO(product.getLength(), product.getWidth(), product.getHeight(), product.getName(), product.getUnit(), product.getAmount(), product.getPrice(), product.getStatus(), product.getWeight());
+            dtos.add(dto1);
+        }
+
+        return dtos;
+    }
 }

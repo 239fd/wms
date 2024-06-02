@@ -54,12 +54,13 @@ public class WorkerController {
     }
 
     @DeleteMapping("/ship")
-    public ResponseEntity<ApiResponse<List<ShipDTO>>> shipProduct(@RequestParam int userId, @RequestBody List<ShipDTO> shipDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public ResponseEntity<ApiResponse<List<ProductDTO>>> shipProduct(@RequestParam int userId, @RequestBody List<ShipDTO> shipDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
 
+        List<ProductDTO> dto = productService.findAllForShipping(userId, shipDTO);
         productService.shipProduct(userId, shipDTO);
 
-        ApiResponse<List<ShipDTO>> response = ApiResponse.<List<ShipDTO>>builder()
-                .data(shipDTO)
+        ApiResponse<List<ProductDTO>> response = ApiResponse.<List<ProductDTO>>builder()
+                .data(dto)
                 .status(true)
                 .message("Shipped")
                 .build();
