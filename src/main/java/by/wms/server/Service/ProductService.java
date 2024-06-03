@@ -5,6 +5,7 @@ import by.wms.server.Entity.*;
 import by.wms.server.Entity.Enum.Status;
 import by.wms.server.Exceptions.AppException;
 import by.wms.server.Repository.*;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -303,16 +304,15 @@ public class ProductService {
         List<InventoryDocsDTO> dtos = new ArrayList<>();
         List <Product> products = new ArrayList<>();
 
-        for (Rack rack : racks) {
-            List<Cell> cells = cellRepository.findByRackId(rack.getId());
-            for (Cell cell : cells) {
-                products.addAll(productRepository.getProductsByCells(cell));
-                for (int i = 0; i < products.size(); i++){
-                    InventoryDocsDTO dto1 = new InventoryDocsDTO(products.get(i).getName(), products.get(i).getStatus());
+        for (Rack rack : warehouse.getRacks()) {
+            for (Cell cell : rack.getCells()) {
+                for (Product product : cell.getProducts()) {
+                    InventoryDocsDTO dto1 = new InventoryDocsDTO(product.getName(), product.getStatus());
                     dtos.add(dto1);
                 }
             }
         }
+
         return dtos;
     }
 
@@ -337,7 +337,11 @@ public class ProductService {
         for (ShipDTO shipDTO : shipDTOs) {
             shipProductNumbers.add(shipDTO.getNumber());
         }
-
+        for(int i = 0; i < shipDTOs.size(); i++){
+            if(!productsInWarehouse.contains(productRepository.findAllById( shipDTOs.get(i).getNumber()))){
+                throw new AppException("No product with this id", HttpStatus.CONFLICT);
+            };
+        }
         for (Product product : productsInWarehouse) {
             if (shipProductNumbers.contains(product.getId())) {
                 product.setStatus(Status.accepted);
@@ -411,7 +415,7 @@ public class ProductService {
             for (Rack rack : warehouse.getRacks()) {
                 for (Cell cell : rack.getCells()) {
                     for (Product product : cell.getProducts()) {
-                        if (product.getId() == dto.getNumber()) {
+                        if (product.getId() == dto.getNumber() && product.getStatus() == Status.accepted) {
                             product.setPrice(dto.getCost());
                             productRepository.save(product);
                             productFound = true;
@@ -424,7 +428,7 @@ public class ProductService {
             }
 
             if (!productFound) {
-                throw new AppException("Product with number " + dto.getNumber() + " not found in warehouse for user ID: " + userId, HttpStatus.BAD_REQUEST);
+                throw new AppException("Product with number " + dto.getNumber() + " not found or cannot be edited in warehouse for user ID: " + userId, HttpStatus.BAD_REQUEST);
             }
         }
     }
@@ -443,10 +447,16 @@ public class ProductService {
 
         List<ProductDTO> dtos = new ArrayList<>();
 
-        for (ShipDTO dto : shipDTO) {
-            Product product = productRepository.findAllById(dto.getNumber());
+        for (int i = 0; i < shipDTO.size(); i++ ){
+            Product product = productRepository.findAllById(shipDTO.get(i).getNumber());
+            if(product.getStatus() == Status.writeoff || product.getStatus() == Status.nonverified){
+                throw new AppException("No product with this id for ship", HttpStatus.CONFLICT);
+            }
             ProductDTO dto1 = new ProductDTO(product.getLength(), product.getWidth(), product.getHeight(), product.getName(), product.getUnit(), product.getAmount(), product.getPrice(), product.getStatus(), product.getWeight());
             dtos.add(dto1);
+            if(dtos.size() == i){
+                throw new AppException("No product with this id", HttpStatus.CONFLICT);
+            }
         }
 
         return dtos;
